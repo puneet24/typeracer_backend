@@ -13,5 +13,8 @@
     "typeracer"
   ],
   "author": "Puneet Agarwal",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^2.3.2"
+  }
 }

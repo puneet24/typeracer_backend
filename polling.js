@@ -1,5 +1,7 @@
 var Appbase = require('appbase-js');
 
+var Firebase = require("firebase");
+
 var appbase_credentials = require('./appbase_credentials.json');
 
 var appbase = new Appbase(appbase_credentials);
@@ -7,6 +9,33 @@ var appbase = new Appbase(appbase_credentials);
 var game_duration = 60;
 var end_duration = 10;
 var begin_duration = 10;
+
+var quote_gl = "";
+
+function get_news(callback){
+	var ref = new Firebase("https://hacker-news.firebaseio.com/v0/");
+	var itemRef;
+	var ids = [];
+	var quote = "";
+	ref.child('topstories').on('value', function(snapshot) {
+	    if(itemRef) {
+	        itemRef.off();
+	    }
+	    itemRef = ref.child('item').child(snapshot.val()[Math.floor((Math.random() * snapshot.val().length) + 1)]);
+	    itemRef.on('value',function(s){
+	    	var item = s.val();
+	    	if(item.type == "story"){
+       				quote += item.title;
+    		}
+    		else if(tem.type == "comment"){
+    			quote += item.text;
+    		}
+    		//console.log(quote);
+    		if(quote.length > 40)
+    			callback(quote);
+	    });
+	});
+}
 
 function start_polling(){
 	function poll() {
@@ -39,6 +68,9 @@ function start_polling(){
 					}).on('error', function(err) {
 						console.log("search error: ", err);
 					});
+					get_news(function(s){
+						quote_gl = s;
+					});
       			}
       			if(response._source.countdown != "0"){
       				var obj = response._source;
@@ -58,6 +90,7 @@ function start_polling(){
       				switch(obj.lstatus){
       					case "begin" : 
       						obj.lstatus = "running";
+      						obj.quote = quote_gl;
       						obj.countdown = game_duration;
       						break; 
       					case "running" :
