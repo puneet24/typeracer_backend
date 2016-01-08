@@ -1,0 +1,17 @@
+{
+  "name": "typeracer_server",
+  "version": "1.0.0",
+  "description": "It basically contains polling.js file as the main file and working of polling.js file is that it will update counter and quotes for the typeracer game. in each game quotes is to fetched using some api so that user gets meaningful quote.",
+  "main": "polling.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "appbase",
+    "polling",
+    "typeracer"
+  ],
+  "author": "Puneet Agarwal",
+  "license": "MIT"
+}
