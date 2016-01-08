@@ -90,7 +90,6 @@ function start_polling(){
       				switch(obj.lstatus){
       					case "begin" : 
       						obj.lstatus = "running";
-      						obj.quote = quote_gl;
       						obj.countdown = game_duration;
       						break; 
       					case "running" :
@@ -99,6 +98,7 @@ function start_polling(){
       						break;
       					case "end" : 
       						obj.lstatus = "begin";
+      						obj.quote = quote_gl;
       						obj.countdown = begin_duration;
       						break;
       				}
