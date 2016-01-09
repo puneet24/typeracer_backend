@@ -193,6 +193,39 @@ appbase.getStream({
 	console.log(err);
 });
 
+appbase.getStream({
+    	type: 'board',
+    	id: '1'
+}).on('data',function(res){
+	if(res._source.lstatus == "running"){
+		appbase.search({
+			type: 'users',
+		    body: {
+		        query: {
+		            match : {"finish" : "true"}
+		        }
+		    }
+		}).on('data', function(response) {
+		    console.log("search, new match: ", response);
+		    if(response.hits != undefined && response.hits.total >= 1 && parseInt(res._source.countdown) >= post_finish + 2){
+		    	res._source.countdown = post_finish;
+	    		appbase.index({
+	    			type: 'board',
+	    			id: '1',
+	    			body: res._source
+	    		}).on('data',function(res){
+	    			console.log(res);
+	    		}).on('error',function(err){
+	    			console.log(err);
+	    		});
+		    }
+		    
+		}).on('error', function(error) {
+		    console.log("caught a search error: ", error)
+		});
+	}
+});
+
 /* If anybody completes game much before then it reduces the countdown */
 appbase.searchStream({
     type: 'users',
@@ -203,25 +236,7 @@ appbase.searchStream({
     }
 }).on('data', function(response) {
     console.log("searchStream(), new match: ", response);
-    console.log("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
-    console.log("ghor paap");
-    appbase.get({
-    	type: 'board',
-    	id: '1'
-    }).on('data',function(res){
-    	if(parseInt(res._source.countdown) > post_finish+2 && res._source.lstatus == "running"){
-    		res._source.countdown = post_finish;
-    		appbase.index({
-    			type: 'board',
-    			id: '1',
-    			body: res._source
-    		}).on('data',function(res){
-    			console.log(res);
-    		}).on('error',function(err){
-    			console.log(err);
-    		});
-    	}
-    })
+    
 }).on('error', function(error) {
     console.log("caught a searchStream() error: ", error)
 });
