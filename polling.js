@@ -96,7 +96,7 @@ function start_polling(){
 								match_all : {}
 							}
 						}).on('data',function(res){
-							if(res.hits.total >= 2){
+							if(res.hits != undefined && res.hits.total >= 2){
 								response._source.countdown = begin_duration;
 								appbase.index({
 									type: 'board',
@@ -158,7 +158,7 @@ appbase.getStream({
 	if(response._source.lstatus == "running"){
 		var flag = 1;
 		appbase.search({
-			type : users,
+			type : 'users',
 			body: {
 					query: {
 						match_all: {}
@@ -194,7 +194,7 @@ appbase.searchStream({
     type: 'users',
     body: {
         query: {
-            match : {finish : 'true'}
+            match : {'finish' : 'true'}
         }
     }
 }).on('data', function(response) {
