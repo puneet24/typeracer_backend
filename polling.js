@@ -203,6 +203,7 @@ appbase.searchStream({
     }
 }).on('data', function(response) {
     console.log("searchStream(), new match: ", response);
+    console.log("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
     console.log("ghor paap");
     appbase.get({
     	type: 'board',
