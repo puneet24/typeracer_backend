@@ -105,7 +105,7 @@ function start_polling(){
 								appbase.index({
 									type: 'board',
 									id: '1',
-									body: response
+									body: response._source
 								}).on('data',function(res){
 									console.log(res);
 								}).on('error',function(err){
