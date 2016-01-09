@@ -95,6 +95,7 @@ function start_polling(){
 							body: {
 						    	query: {
 						      		match_all: {}
+					    		}
 					    	}
 						}).on('data',function(res){
 							console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
