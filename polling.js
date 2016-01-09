@@ -56,14 +56,16 @@ function start_polling(){
 					}).on('data', function(res) {
 						console.log("query result: ", res);
 					  	for(var i=0;i<res.hits.total;i++){
-					  		appbase.delete({
-						    	type: 'users',
-						      	id : res.hits.hits[i]._id
-						    }).on('data', function(res) {
-						      	console.log("successfully deleted: ", res);
-						    }).on('error', function(err) {
-						      	console.log("deletion error: ", err);
-						    });
+					  		if(res.hits.hits[i] != undefined){
+						  		appbase.delete({
+							    	type: 'users',
+							      	id : res.hits.hits[i]._id
+							    }).on('data', function(res) {
+							      	console.log("successfully deleted: ", res);
+							    }).on('error', function(err) {
+							      	console.log("deletion error: ", err);
+							    });
+							}
 					  	}
 					}).on('error', function(err) {
 						console.log("search error: ", err);
