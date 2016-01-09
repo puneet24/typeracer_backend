@@ -91,11 +91,14 @@ function start_polling(){
 					}
 					else{
 						appbase.search({
-							type: 'users',
+							type: "users",
 							body: {
-								match_all : {}
-							}
+						    	query: {
+						      		match_all: {}
+					    	}
 						}).on('data',function(res){
+							console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+							console.log(res);
 							if(res.hits != undefined && res.hits.total >= 2){
 								response._source.countdown = begin_duration;
 								appbase.index({
