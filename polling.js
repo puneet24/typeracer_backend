@@ -9,6 +9,7 @@ var appbase = new Appbase(appbase_credentials);
 var game_duration = 60;
 var end_duration = 10;
 var begin_duration = 10;
+var post_finish = 10;
 
 var quote_gl = "";
 
@@ -75,17 +76,40 @@ function start_polling(){
 					});
       			}
       			if(response._source.countdown != "0"){
-      				var obj = response._source;
-      				obj.countdown = parseInt(obj.countdown)-1;
-      				appbase.index({
-					    type: 'board',
-					    id: '1',
-					    body: obj
-					}).on('data', function(response) {
-					    console.log(response);
-					}).on('error', function(error) {
-					    console.log(error);
-					});
+      				if(resonse._source.countdown != "infinity"){
+	      				var obj = response._source;
+	      				obj.countdown = parseInt(obj.countdown)-1;
+	      				appbase.index({
+						    type: 'board',
+						    id: '1',
+						    body: obj
+						}).on('data', function(response) {
+						    console.log(response);
+						}).on('error', function(error) {
+						    console.log(error);
+						});
+					}
+					else{
+						appbase.search({
+							type: 'users',
+							body: {
+								match_all : {}
+							}
+						}).on('data',function(res){
+							if(res.hits.total >= 2){
+								response._source.countdown = begin_duration;
+								appbase.index({
+									type: 'board',
+									id: '1',
+									body: response
+								}).on('data',function(res){
+									console.log(res);
+								}).on('error',function(err){
+									console.log(err);
+								});
+							}
+						})
+					}
       			}
       			else{
       				var obj = response._source;
@@ -101,7 +125,7 @@ function start_polling(){
       					case "end" : 
       						obj.lstatus = "begin";
       						obj.quote = quote_gl;
-      						obj.countdown = begin_duration;
+      						obj.countdown = "infinity";
       						break;
       				}
       				appbase.index({
@@ -124,3 +148,74 @@ function start_polling(){
 }
 
 start_polling();
+
+
+/* This is the extra part which handles the case when everybody finishes the game before countdown.*/
+appbase.getStream({
+	type : 'board',
+	id : '1'
+}).on('data',function(response){
+	if(response._source.lstatus == "running"){
+		var flag = 1;
+		appbase.search({
+			type : users,
+			body: {
+					query: {
+						match_all: {}
+					}
+				}
+		}).on('data',function(res){
+			var i = 0;
+			for(i=0;i<res.hits.total;i++){
+				if(res.hits.hits[i]._source.finish != "true"){
+					flag = 0;
+					break;
+				}
+			}
+			if(flag == 1 && i == res.hits.total){
+				appbase.index({
+					type : 'board',
+					id: '1',
+					body: {lstatus : 'end', countdown : end_duration,}
+				}).on('data',function(res){
+					console.log(res);
+				}).on('error',function(err){
+					console.log(err);
+				});
+			}
+		})
+	}
+}).on('error',function(err){
+	console.log(err);
+});
+
+/* If anybody completes game much before then it reduces the countdown */
+appbaseRef.searchStream({
+    type: 'users',
+    body: {
+        query: {
+            match : {finish : 'true'}
+        }
+    }
+}).on('data', function(response) {
+    console.log("searchStream(), new match: ", response);
+    appbase.get({
+    	type: 'board',
+    	id: '1'
+    }).on('data',function(res){
+    	if(parseInt(res._source.countdown) > post_finish+2 && res._source.lstatus == "running"){
+    		res._source.countdown = post_finish;
+    		appbase.index({
+    			type: 'board',
+    			id: '1',
+    			body: res._source
+    		}).on('data',functon(res){
+    			console.log(res);
+    		}).on('error',function(err){
+    			console.log(err);
+    		});
+    	}
+    })
+}).on('error', function(error) {
+    console.log("caught a searchStream() error: ", error)
+});
