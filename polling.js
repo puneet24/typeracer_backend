@@ -11,6 +11,8 @@ var end_duration = 10;
 var begin_duration = 10;
 var post_finish = 10;
 
+var fm_quote = "The price of success is hard work, dedication to the job at hand, and the determination that whether we win or lose, we have applied the best of ourselves to the task at hand.Read more at http://www.brainyquote.com/quotes/topics/topic_success.html#8VeevuGrFi1LLhWt.99";
+
 var quote_gl = "";
 
 function get_news(callback){
@@ -71,9 +73,9 @@ function start_polling(){
 					}).on('error', function(err) {
 						console.log("search error: ", err);
 					});
-					get_news(function(s){
-						quote_gl = s;
-					});
+					// get_news(function(s){
+					// 	quote_gl = s;
+					// });
       			}
       			if(response._source.countdown != "0"){
       				if(response._source.countdown != "infinity"){
@@ -98,8 +100,6 @@ function start_polling(){
 					    		}
 					    	}
 						}).on('data',function(res){
-							console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-							console.log(res);
 							if(res.hits != undefined && res.hits.total >= 2){
 								response._source.countdown = begin_duration;
 								appbase.index({
@@ -128,7 +128,8 @@ function start_polling(){
       						break;
       					case "end" : 
       						obj.lstatus = "begin";
-      						obj.quote = quote_gl;
+      						obj.quote = fm_quote;
+      						game_duration = fm_quote.length;
       						obj.countdown = "infinity";
       						break;
       				}
