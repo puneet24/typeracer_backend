@@ -76,7 +76,7 @@ function start_polling(){
 					});
       			}
       			if(response._source.countdown != "0"){
-      				if(resonse._source.countdown != "infinity"){
+      				if(response._source.countdown != "infinity"){
 	      				var obj = response._source;
 	      				obj.countdown = parseInt(obj.countdown)-1;
 	      				appbase.index({
@@ -190,7 +190,7 @@ appbase.getStream({
 });
 
 /* If anybody completes game much before then it reduces the countdown */
-appbaseRef.searchStream({
+appbase.searchStream({
     type: 'users',
     body: {
         query: {
@@ -209,7 +209,7 @@ appbaseRef.searchStream({
     			type: 'board',
     			id: '1',
     			body: res._source
-    		}).on('data',functon(res){
+    		}).on('data',function(res){
     			console.log(res);
     		}).on('error',function(err){
     			console.log(err);
