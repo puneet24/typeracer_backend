@@ -11,7 +11,7 @@ var end_duration = 10;
 var begin_duration = 10;
 var post_finish = 10;
 
-var fm_quote = "The price of success is hard work, dedication to the job at hand, and the determination that whether we win or lose, we have applied the best of ourselves to the task at hand.Read more at http://www.brainyquote.com/quotes/topics/topic_success.html#8VeevuGrFi1LLhWt.99";
+var fm_quote = "Hello, this is just fo testing purpose. After some time quotes will be fetched randomly";
 
 var quote_gl = "";
 
