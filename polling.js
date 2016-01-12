@@ -104,6 +104,8 @@ function start_polling(){
 						}).on('data',function(res){
 							if(res.hits != undefined && res.hits.total >= 1){
 								response._source.countdown = begin_duration;
+								response._source.quote = Quotes[Math.floor(Math.random()*Quotes.length)];
+								game_duration = response._source.quote.length;
 								appbase.index({
 									type: 'board',
 									id: '1',
@@ -130,8 +132,6 @@ function start_polling(){
       						break;
       					case "end" : 
       						obj.lstatus = "begin";
-      						obj.quote = Quotes[Math.floor(Math.random()*Quotes.length)];
-      						game_duration = obj.quote.length;
       						obj.countdown = "infinity";
       						break;
       				}
