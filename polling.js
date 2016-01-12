@@ -102,7 +102,7 @@ function start_polling(){
 					    		}
 					    	}
 						}).on('data',function(res){
-							if(res.hits != undefined && res.hits.total >= 2){
+							if(res.hits != undefined && res.hits.total >= 1){
 								response._source.countdown = begin_duration;
 								appbase.index({
 									type: 'board',
