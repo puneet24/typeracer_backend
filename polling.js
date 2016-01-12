@@ -4,6 +4,8 @@ var Firebase = require("firebase");
 
 var appbase_credentials = require('./appbase_credentials.json');
 
+var Quotes = require('./quotes.json');
+
 var appbase = new Appbase(appbase_credentials);
 
 var game_duration = 60;
@@ -128,8 +130,8 @@ function start_polling(){
       						break;
       					case "end" : 
       						obj.lstatus = "begin";
-      						obj.quote = fm_quote;
-      						game_duration = fm_quote.length;
+      						obj.quote = Quotes[Math.floor(Math.random()*Quotes.length)];
+      						game_duration = obj.quote.length;
       						obj.countdown = "infinity";
       						break;
       				}
